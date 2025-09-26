@@ -1,3 +1,3 @@
 <?php
-echo "Search Book Page";
+echo "Search Book Page!";
 ?>
