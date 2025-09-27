@@ -101,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['keyword'])) {
             echo $message;
         }
 
-        //FOR RESULTS
+        //FOR RESULT
         if (!empty($results)) {
             echo "<table>";
             echo "<tr><th>Title</th><th>Author</th><th>Year</th><th>ISBN</th></tr>";
