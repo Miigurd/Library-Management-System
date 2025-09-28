@@ -7,6 +7,8 @@ if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
+$message = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
         $username = $_POST['username'];
@@ -19,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($row = $result->fetch_assoc()) {
             $_SESSION['role'] = $row['role'];
+            $_SESSION['user_id'] = $row['id'];
 
             if ($_SESSION['role'] == "Librarian") {
                 header("Location: librarian.php");
@@ -30,29 +33,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
         else {
-            echo "Invalid login!";
+            $message = "<p id='message' style='color:red;'>Invalid login!</p>";
         }
     }
     else {
-        echo "Both fields are required!";
+        $message = "<p id='message' style='color:red;'>Both fields are required!</p>";
     }
 }
 ?>
 
-<form method="post">
-    <table>
-        <tr>
-            <td><label for="username">Username:</label></td>
-            <td><input type="text" id="username" name="username"></td>
-        </tr>
-        <tr>
-            <td><label for="password">Password:</label></td>
-            <td><input type="password" id="password" name="password"></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align:right;">
-                <input type="submit" value="Login">
-            </td>
-        </tr>
-    </table>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px 200px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form method="post">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br>
+
+            <input type="submit" value="Login">
+        </form>
+
+        <?php
+        if (!empty($message)) {
+            echo $message;
+        }
+        ?>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const msg = document.getElementById('message');
+            if (msg) {
+                setTimeout(() => { msg.style.display = 'none'; }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
