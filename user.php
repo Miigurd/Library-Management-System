@@ -31,14 +31,14 @@ $result = $conn->query("SELECT * FROM books");
             background: #4CAF50;
             color: white;
         }
-        a.btn {
+        form button {
             padding: 6px 12px;
-            text-decoration: none;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
             color: white;
         }
-        .edit { background: #2196F3; }
-        .delete { background: #f44336; }
+        .borrow { background: #2196F3; }
         h2 {
             text-align: center;
             margin-bottom: 20px;
@@ -55,9 +55,9 @@ $result = $conn->query("SELECT * FROM books");
     </style>
 </head>
 <body>
-    <h2>Books List</h2>
+    <h2>Available Books</h2>
     <div class="top-links">
-        <a href="addbook.php">➕ Add Book</a> | 
+        <a href="searchbook.php">Search</a> | 
         <a href="logout.php">Logout</a>
     </div>
 
@@ -68,7 +68,7 @@ $result = $conn->query("SELECT * FROM books");
             <th>Author</th>
             <th>Year</th>
             <th>ISBN</th>
-            <th>Actions</th>
+            <th>Status</th>
         </tr>
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while($row = $result->fetch_assoc()): ?>
@@ -79,8 +79,14 @@ $result = $conn->query("SELECT * FROM books");
                     <td><?= $row['publication_year'] ?></td>
                     <td><?= htmlspecialchars($row['isbn']) ?></td>
                     <td>
-                        <a class="btn edit" href="edit-remove.php?action=edit&id=<?= $row['id'] ?>">Edit</a>
-                        <a class="btn delete" href="edit-remove.php?action=delete&id=<?= $row['id'] ?>" onclick="return confirm('Are you sure to delete this book?');">Delete</a>
+                        <?php if ($row['available'] == 1): ?>
+                            <form method="post" action="borrow.php" style="display:inline;">
+                                <input type="hidden" name="book_id" value="<?= $row['id'] ?>">
+                                <button type="submit" name="borrow" class="borrow">Borrow</button>
+                            </form>
+                        <?php else: ?>
+                            Not Available
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endwhile; ?>

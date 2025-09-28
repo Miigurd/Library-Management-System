@@ -21,7 +21,7 @@ if ($action === "delete") {
     if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_delete'])) {
         $sql = "DELETE FROM books WHERE id = $id";
         if ($conn->query($sql) === TRUE) {
-            header("Location: browse-view-table.php?msg=deleted");
+            header("Location: librarian.php?msg=deleted");
             exit;
         } else {
             $error = "Error deleting record: " . $conn->error;
@@ -249,7 +249,7 @@ if ($action === "delete") {
                             Delete Book
                         </button>
                     </form>
-                    <a href="browse-view-table.php" class="btn btn-secondary">
+                    <a href="librarian.php" class="btn btn-secondary">
                         Cancel
                     </a>
                 </div>
@@ -270,7 +270,7 @@ if ($action === "edit") {
 
         $update = "UPDATE books SET title='$title', author='$author', publication_year='$year', isbn='$isbn' WHERE id=$id";
         if ($conn->query($update) === TRUE) {
-            header("Location: browse-view-table.php?msg=updated");
+            header("Location: librarian.php?msg=updated");
             exit;
         } else {
             $error = "Error updating record: " . $conn->error;
@@ -470,7 +470,7 @@ if ($action === "edit") {
                         Save Changes
                     </button>
                 </form>
-                <a href="browse-view-table.php" class="back-link">
+                <a href="librarian.php" class="back-link">
                     ← Back to Books
                 </a>
             </div>
