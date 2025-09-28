@@ -21,13 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($row = $result->fetch_assoc()) {
             $_SESSION['role'] = $row['role'];
-            $_SESSION['user_id'] = $row['id'];
 
             if ($_SESSION['role'] == "Librarian") {
                 header("Location: librarian.php");
                 exit;
             }
             elseif ($_SESSION['role'] == "User") {
+                $_SESSION['user_id'] = $row['id'];
                 header("Location: user.php");
                 exit;
             }
