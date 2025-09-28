@@ -88,6 +88,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['title'])) {
             <input type="submit" value="Add Book">
         </form>
 
+        <br>
+        <a href="librarian.php">
+        <button type="button" style="padding:10px 20px; border:none; border-radius:5px; background-color:#2196F3; color:white; cursor:pointer;">
+            Back to Home
+        </button>
+        </a>
         
         <?php
         //MESSAGE DISPLAY AFTER BUTTON CLICKED
