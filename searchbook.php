@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("db.php"); 
 
 $message = "";
@@ -77,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['keyword'])) {
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
+            text-align: center;
         }
         th {
             background-color: #4CAF50;
@@ -85,6 +87,18 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['keyword'])) {
         #message {
             margin: 10px 0;
         }
+        a.btn, button {
+            padding: 6px 12px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .borrow { background: #4CAF50; }
+        .edit { background: #2196F3; }
+        .delete { background: #f44336; }
+        .dashboard { background: #2196F3; margin-top: 20px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -96,24 +110,68 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['keyword'])) {
         </form>
 
         <?php
-        // FOR NO REULTS
+        // FOR NO RESULTS
         if (!empty($message)) {
             echo $message;
         }
 
-        //FOR RESULT
+        // FOR RESULTS
         if (!empty($results)) {
             echo "<table>";
-            echo "<tr><th>Title</th><th>Author</th><th>Year</th><th>ISBN</th></tr>";
+            echo "<tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>ISBN</th>";
+
+            if (isset($_SESSION['role']) && $_SESSION['role'] === "User") {
+                echo "<th>Action</th>";
+            } elseif (isset($_SESSION['role']) && $_SESSION['role'] === "Librarian") {
+                echo "<th>Actions</th>";
+            }
+
+            echo "</tr>";
+
             foreach ($results as $book) {
                 echo "<tr>";
                 echo "<td>".htmlspecialchars($book['title'])."</td>";
                 echo "<td>".htmlspecialchars($book['author'])."</td>";
                 echo "<td>".$book['publication_year']."</td>";
                 echo "<td>".htmlspecialchars($book['isbn'])."</td>";
+
+                if (isset($_SESSION['role']) && $_SESSION['role'] === "User") {
+                    echo "<td>";
+                    if ($book['available'] == 1) {
+                        echo "<form method='post' action='borrow.php' style='display:inline;'>
+                                <input type='hidden' name='book_id' value='".$book['id']."'>
+                                <button type='submit' name='borrow' class='borrow'>Borrow</button>
+                              </form>";
+                    } else {
+                        echo "Not Available";
+                    }
+                    echo "</td>";
+                }
+
+                if (isset($_SESSION['role']) && $_SESSION['role'] === "Librarian") {
+                    echo "<td>
+                            <a class='btn edit' href='edit-remove.php?action=edit&id=".$book['id']."'>Edit</a>
+                            <a class='btn delete' href='edit-remove.php?action=delete&id=".$book['id']."' onclick=\"return confirm('Are you sure to delete this book?');\">Delete</a>
+                          </td>";
+                }
+
                 echo "</tr>";
             }
+
             echo "</table>";
+        }
+
+        // Back to Dashboard button
+        if (isset($_SESSION['role'])) {
+            if ($_SESSION['role'] === "User") {
+                echo "<a href='user.php' class='btn dashboard'>Back to Home</a>";
+            } elseif ($_SESSION['role'] === "Librarian") {
+                echo "<a href='librarian.php' class='btn dashboard'>Back to Home</a>";
+            }
         }
         ?>
     </div>
