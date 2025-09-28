@@ -1,11 +1,6 @@
 <?php
 session_start();
-
-$mysqli = new mysqli("db", "root", "rootpassword", "library_db");
-
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
+include("db.php");
 
 $message = "";
 
@@ -14,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        $sql = $mysqli->prepare("SELECT * FROM accounts WHERE username=? AND password=?");
+        $sql = $conn->prepare("SELECT * FROM accounts WHERE username=? AND password=?");
         $sql->bind_param("ss", $username, $password);
         $sql->execute();
         $result = $sql->get_result();
